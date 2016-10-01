@@ -8,6 +8,7 @@ public class PointInGrid {
 	public int yGrid = 0;
 	public bool empty = true;
 	public Transform tran;
+	public bool canMove = true;
 
 	public void SetTran(Transform tran) {
 		this.tran = tran;
