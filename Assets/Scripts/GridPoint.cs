@@ -4,38 +4,38 @@ using System.Collections;
 public class GridPoint {
 
 	public float width = 1f;
-	public int xLenght;
-	public int yLenght;
-	public PointInGrid originPoint = new PointInGrid(Vector3.zero);
+	public int xGrid;
+	public int yGrid;
+	public Vector3 originPoint = Vector3.zero;
 	public PointInGrid[,] gridPoint;
 
-	public GridPoint(int xLenght, int yLenght) {
-		this.xLenght = xLenght;
-		this.yLenght = yLenght;
+	public GridPoint(int xGrid, int yGrid) {
+		this.xGrid = xGrid;
+		this.yGrid = yGrid;
 		GeneratePoint();
 	}
 
-	public GridPoint(int xLenght, int yLenght, float width) {
-		this.xLenght = xLenght;
-		this.yLenght = yLenght;
+	public GridPoint(int xGrid, int yGrid, float width) {
+		this.xGrid = xGrid;
+		this.yGrid = yGrid;
 		this.width = width;
 		GeneratePoint();
 	}
 
-	public GridPoint(int xLenght, int yLenght, float width, PointInGrid originPoint) {
-		this.xLenght = xLenght;
-		this.yLenght = yLenght;
+	public GridPoint(int xGrid, int yGrid, float width, Vector3 originPoint) {
+		this.xGrid = xGrid;
+		this.yGrid = yGrid;
 		this.width = width;
 		this.originPoint = originPoint;
 		GeneratePoint();
 	}
 
 	private void GeneratePoint() {
-		gridPoint = new PointInGrid[xLenght, yLenght];
-		for (int i = 0; i < xLenght; i++) {
-			for (int j = 0; j < yLenght; j++) {
-				float x = width * (i + 1) - width / 2 + originPoint.position.x;
-				float y = width * (j + 1) - width / 2 + originPoint.position.y;
+		gridPoint = new PointInGrid[xGrid, yGrid];
+		for (int i = 0; i < xGrid; i++) {
+			for (int j = 0; j < yGrid; j++) {
+				float x = width * (i + 1) - width / 2 + originPoint.x;
+				float y = width * (j + 1) - width / 2 + originPoint.y;
 				Vector3 pos = new Vector3(x, y, 0);
 				PointInGrid pointInGrid = new PointInGrid(pos, i + 1, j + 1);
 				gridPoint[i, j] = pointInGrid;
@@ -44,12 +44,12 @@ public class GridPoint {
 	}
 
 	public PointInGrid GetPoint(int xGrid, int yGrid) {
-		if (xGrid > xLenght || yGrid > yLenght || xGrid < 1 || yGrid < 1) {
-			if (xGrid > xLenght) {
-				return gridPoint[xLenght - 1, yGrid - 1];
+		if (xGrid > this.xGrid || yGrid > this.yGrid || xGrid < 1 || yGrid < 1) {
+			if (xGrid > this.xGrid) {
+				return gridPoint[this.xGrid - 1, yGrid - 1];
 			} else
-			if (yGrid > yLenght) {
-				return gridPoint[xGrid - 1, yLenght - 1];
+			if (yGrid > this.yGrid) {
+				return gridPoint[xGrid - 1, this.yGrid - 1];
 			} else
 			if (xGrid < 1) {
 				return gridPoint[0, yGrid - 1];
@@ -59,10 +59,6 @@ public class GridPoint {
 			}
 		}
 		return gridPoint[xGrid - 1, yGrid - 1];
-	}
-
-	public void SetPoint(PointInGrid point) {
-		gridPoint[point.xGrid - 1, point.yGrid - 1] = point;
 	}
 }
 

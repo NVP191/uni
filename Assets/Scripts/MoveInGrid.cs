@@ -2,51 +2,68 @@
 using System.Collections;
 
 public class MoveInGrid {
-
-	public static void Rotate(GridPoint gridPoint, MinoZ mino1, MinoZ mino2) {
-		
+	
+	public static PointInGrid DownLeft(GridPoint gridPoint, PointInGrid fromPoint) {
+		PointInGrid toPoint = Down(gridPoint, fromPoint);
+		return Left(gridPoint, toPoint);
 	}
 
-	public static void Up(GridPoint gridPoint, MinoZ minoZ) {
-		Move(gridPoint, minoZ, 0, 1);
+	public static PointInGrid UpRight(GridPoint gridPoint, PointInGrid fromPoint) {
+		PointInGrid toPoint = Up(gridPoint, fromPoint);
+		return Right(gridPoint, toPoint);
 	}
 
-	public static void Down(GridPoint gridPoint, MinoZ minoZ) {
-		Move(gridPoint, minoZ, 0, -1);
+	public static PointInGrid Up(GridPoint gridPoint, PointInGrid fromPoint) {
+		return Move(gridPoint, fromPoint, 0, 1);
 	}
 
-	public static void Right(GridPoint gridPoint, MinoZ minoZ) {
-		Move(gridPoint, minoZ, 1, 0);
+	public static PointInGrid Down(GridPoint gridPoint, PointInGrid fromPoint) {
+		return Move(gridPoint, fromPoint, 0, -1);
 	}
 
-	public static void Left(GridPoint gridPoint, MinoZ minoZ) {
-		Move(gridPoint, minoZ, -1, 0);
+	public static PointInGrid Left(GridPoint gridPoint, PointInGrid fromPoint) {
+		return Move(gridPoint, fromPoint, -1, 0);
 	}
 
-	private static void Move(GridPoint gridPoint, MinoZ minoZ, int xStep, int yStep) {
-		PointInGrid fromPoint = minoZ.point;
-		PointInGrid toPoint = null;
+	public static PointInGrid Right(GridPoint gridPoint, PointInGrid fromPoint) {
+		return Move(gridPoint, fromPoint, 1, 0);
+	}
 
-		if (fromPoint.xGrid <= gridPoint.xLenght && fromPoint.yGrid <= gridPoint.yLenght && minoZ.canMove) {
-			
-			fromPoint = gridPoint.GetPoint(fromPoint.xGrid, fromPoint.yGrid);
-			toPoint = gridPoint.GetPoint(fromPoint.xGrid + xStep, fromPoint.yGrid + yStep);
+	// Di chuyen mot diem trong Grid xStep sang trai, yStep sang phai
+	private static PointInGrid Move(GridPoint gridPoint, PointInGrid fromPoint, int xStep, int yStep) {
 
+		// Kiem tra diem co kha nang di chuyen
+		if (PointCanMove(gridPoint, fromPoint)) {
+
+			PointInGrid toPoint = gridPoint.GetPoint(fromPoint.xGrid + xStep, fromPoint.yGrid + yStep);
+
+			// Kiem tra vi tri di chuyen den
 			if (toPoint.empty) {
-
-				toPoint.SetTran(minoZ.transform);
-				toPoint.empty = false;
+				
+				toPoint.SetTran(fromPoint.tran);
+				toPoint.type = fromPoint.type;
 
 				fromPoint.SetTran(null);
-				fromPoint.empty = true;
 
-				minoZ.SetPoint(toPoint);
-			}
+				// Diem mat kha nang di chuyen neu no den hang cuoi cua Grid
+				// hoac diem duoi no khong con trong va trang thai canMove cua diem duoi no = false
+				if (toPoint.yGrid == 1 || (!gridPoint.GetPoint(toPoint.xGrid, toPoint.yGrid - 1).empty
+				    && !gridPoint.GetPoint(toPoint.xGrid, toPoint.yGrid - 1).canMove)) {
+					
+					toPoint.canMove = false;
 
-			if (fromPoint.yGrid == 1 || !gridPoint.GetPoint(minoZ.point.xGrid, minoZ.point.yGrid - 1).empty) {
-				minoZ.canMove = false;
-
+				}
+				return toPoint;
 			}
 		}
+		return fromPoint;
+	}
+
+	// Kiem tra mot diem trong Grid co kha nang di chuyen hay khong
+	private static bool PointCanMove(GridPoint gridPoint, PointInGrid point) {
+		if (point.xGrid <= gridPoint.xGrid && point.yGrid <= gridPoint.yGrid && point.canMove) {
+			return true;
+		}
+		return false;
 	}
 }
